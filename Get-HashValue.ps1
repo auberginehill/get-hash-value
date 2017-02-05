@@ -338,7 +338,7 @@ or later.
 
 .DESCRIPTION
 Get-HashValue uses the inbuilt Get-FileHash cmdlet in machines that have PowerShell
-version 4 or later installed and .NET Framework v3.5 in machines that are running
+version 4 or later installed and .NET Framework in machines that are running
 PowerShell version 2 or 3 for file analysation and for calculating the hash values.
 MD5, SHA256, SHA1, SHA384, SHA512, MACTripleDES and RIPEMD160 hash values are
 automatically displayed for files that are defined with the -FilePath parameter.
