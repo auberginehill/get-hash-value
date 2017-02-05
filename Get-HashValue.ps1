@@ -13,7 +13,7 @@ Param (
     [Alias("FilenameWithPathName","FullPath","Source","File")]
     [string[]]$FilePath,
     [Alias("ReportPath")]
-    [string]$Output = "$env:temp",    
+    [string]$Output = "$env:temp",
     [ValidateSet("MD5","SHA1","SHA256","SHA384","SHA512","MACTripleDES","RIPEMD160")]
     [Alias("Type","Hash","HashType","Version","Algo")]
     [string]$Algorithm
@@ -27,7 +27,7 @@ Begin {
 
     # Establish some common variables
     $txt_filename = "hash_values.txt"
-    $separator = "---------------------"    
+    $separator = "---------------------"
     $ErrorActionPreference = "Stop"
     $computer = $env:COMPUTERNAME
     $empty_line = ""
@@ -165,7 +165,7 @@ Process {
             Continue
 
         } Else {
-            
+
             # Convert the item ($file) to a fully-qualified path
             $full_path = (Resolve-Path $file).Path
 
@@ -316,7 +316,7 @@ End {
 
 https://community.spiceworks.com/scripts/show/2263-get-the-sha1-sha256-sha384-sha512-md5-or-ripemd160-hash-of-a-file    # Twon of An: "Get the SHA1,SHA256,SHA384,SHA512,MD5 or RIPEMD160 hash of a file"
 http://stackoverflow.com/questions/8711564/unable-to-read-an-open-file-with-binary-reader                               # Gisli: "Unable to read an open file with binary reader"
-http://www.leeholmes.com/guide                                                                                          # Lee Holmes: "Windows PowerShell Cookbook (O'Reilly)" (Get-FileHash script) 
+http://www.leeholmes.com/guide                                                                                          # Lee Holmes: "Windows PowerShell Cookbook (O'Reilly)" (Get-FileHash script)
 
 
   _    _      _
@@ -337,84 +337,86 @@ hash values from one or multiple specified files in Windows PowerShell version 2
 or later.
 
 .DESCRIPTION
-Get-HashValue uses the inbuilt Get-FileHash cmdlet in machines that have PowerShell 
-version 4 or later installed and .NET Framework v3.5 in machines that are running 
-PowerShell version 2 or 3 for file analysation and calculating hash values. 
-MD5, SHA256, SHA1, SHA384, SHA512, MACTripleDES and RIPEMD160 hash values are 
-automatically displayed for files that are defined with the -FilePath parameter. 
-To show only a certain hash type, the parameter -Algorithm may be added to the 
+Get-HashValue uses the inbuilt Get-FileHash cmdlet in machines that have PowerShell
+version 4 or later installed and .NET Framework v3.5 in machines that are running
+PowerShell version 2 or 3 for file analysation and for calculating the hash values.
+MD5, SHA256, SHA1, SHA384, SHA512, MACTripleDES and RIPEMD160 hash values are
+automatically displayed for files that are defined with the -FilePath parameter.
+To show only a certain hash type, the parameter -Algorithm may be added to the
 launching command.
 
-The -FilePath parameter accepts plain filenames (then the current directory gets 
-searched for the inputted filename) or 'FullPath' filenames, which include the path 
-to the file as well (such as C:\Windows\explorer.exe). To enter multiple files for 
-analysation, please separate each individual entity with a comma. If the filename or 
-the directory name includes space characters, please enclose the whole string 
-(the individual entity in question) in quotation marks (single or double). 
+The -FilePath parameter accepts plain filenames (then the current directory gets
+searched for the inputted filename) or 'FullPath' filenames, which include the path
+to the file as well (such as C:\Windows\explorer.exe). To enter multiple files for
+analysation, please separate each individual entity with a comma. If the filename or
+the directory name includes space characters, please enclose the whole string
+(the individual entity in question) in quotation marks (single or double).
 
-If any hash values are found, a text file (hash_values.txt by default) is created to
+If any hash values are found, a text file (hash_values.txt) is created to
 $env:temp, which points to the current temporary file location and is set in the
 system (- for more information about $env:temp, please see the Notes section).
-The default output destination folder may be changed with the -Output parameter. 
-During the possibly invoked text file creation procedure Get-HashValue tries to 
+The default output destination folder may be changed with the -Output parameter.
+During the possibly invoked text file creation procedure Get-HashValue tries to
 preserve any pre-existing content rather than overwrite the file, so if the text file
-already exists in the defined -Output folder, new log-info data is appended to the 
-end of that file.
-
-Please note that if any of the parameter values include space characters, the value
-should be enclosed in quotation marks (single or double) so that PowerShell can 
-interpret the command correctly.
+already exists in the defined -Output folder, new log-info data is appended to the
+end of that file. Please note that if any of the parameter values include space
+characters, the value should be enclosed in quotation marks (single or double) so
+that PowerShell can interpret the command correctly.
 
 .PARAMETER FilePath
-with aliases -FilenameWithPathName, -FullPath, -Source, and -File. The -FilePath 
-parameter determines, which file(s) is/are selected for hash value calculation, and 
+with aliases -FilenameWithPathName, -FullPath, -Source, and -File. The -FilePath
+parameter determines, which file(s) is/are selected for hash value calculation, and
 in essence define the objects for Get-HashValue.
 
-The -FilePath parameter accepts plain filenames (then the current directory gets 
-searched for the inputted filename) or 'FullPath' filenames, which include the path 
-to the file as well (such as C:\Windows\explorer.exe). To enter multiple files for 
-analysation, please separate each individual entity with a comma. If the filename or 
-the directory name includes space characters, please enclose the whole string 
-(the individual entity in question) in quotation marks (single or double). It's not 
-mandatory to write -FilePath in the get hash value command to invoke the -FilePath 
-parameter, as is shown in the Examples below, since Get-HashValue is trying to 
-decipher the inputted queries as good as it is machinely possible within a 40 KB 
-size limit. The -FilePath parameter also takes an array of strings and objects 
-could be piped to this parameter, too. If no FilePath is defined in the command 
-launching Get-HashValue the user will be prompted to enter a FilePath value.
+The -FilePath parameter accepts plain filenames (then the current directory gets
+searched for the inputted filename) or 'FullPath' filenames, which include the path
+to the file as well (such as C:\Windows\explorer.exe). To enter multiple files for
+analysation, please separate each individual entity with a comma. If the filename or
+the directory name includes space characters, please enclose the whole string
+(the individual entity in question) in quotation marks (single or double). It's not
+mandatory to write -FilePath in the get hash value command to invoke the -FilePath
+parameter, as is shown in the Examples below, since Get-HashValue is trying to
+decipher the inputted queries as good as it is machinely possible within a 40 KB
+size limit. The -FilePath parameter also takes an array of strings and objects
+could be piped to this parameter, too. If no value for the -FilePath parameter
+is defined in the command launching Get-HashValue, the user will be prompted to
+enter a -FilePath value.
 
 .PARAMETER Output
 with an alias -ReportPath. Specifies where the text file (hash_values.txt, which is
-created or updated when hash values are successfully calculated) is to be saved. The
+created or updated with successfully calculated hash values) is to be saved. The
 text file includes the hash values and a timestamp, when the values were calculated.
-The default save location is $env:temp, which points to the current temporary file 
-location, which is set in the system. The default -Output save location is defined 
-at line 16 with the $Output variable. In case the path name includes space 
-characters, please enclose the path name in quotation marks (single or double). 
-For usage, please see the Examples below and for more information about $env:temp, 
+The default save location is $env:temp, which points to the current temporary file
+location, which is set in the system. The default -Output save location is defined
+at line 16 with the $Output variable. In case the path name includes space
+characters, please enclose the path name in quotation marks (single or double).
+For usage, please see the Examples below and for more information about $env:temp,
 please see the Notes section below.
 
 .PARAMETER Algorithm
-with aliases -Type, -Hash, -HashType, -Version and -Algo. If the -Algorithm 
+with aliases -Type, -Hash, -HashType, -Version and -Algo. If the -Algorithm
 parameter is added to the command launching Get-HashValue, only the defined type of
 hash value of the object file(s) is displayed and written to the text file. The valid
 values for -Algorithm parameter are MD5, SHA1, SHA256, SHA384, SHA512, MACTripleDES
-and RIPEMD160. For best results, please specify only one valid value for Algorithm 
+or RIPEMD160. For best results, please specify only one valid value for -Algorithm
 parameter in one get hash value command. To make the -Algorithm parameter accept
 multiple values may be the focus of further development in Get-HashValue.
+If no -Algorithm parameter is defined in the command launching Get-HashValue, all
+the available hash values (i.e. MD5, SHA256, SHA1, SHA384, SHA512, MACTripleDES and
+RIPEMD160) are displayed and written to a text file.
 
 
 .OUTPUTS
-Displays information about hash values in console, and if any hash values were 
-successfully calculated, writes or updates a logfile (hash_values.txt) at $env:temp 
-by default or to the location specified with the -Output parameter.
+Displays information about hash values in console, and if any hash values were
+successfully calculated, writes or updates a text file (hash_values.txt) at
+$env:temp by default or at the location specified with the -Output parameter.
 
 
-    Default values (the text file creation/updating procedure only occurs if 
+    Default values (the text file creation/updating procedure only occurs, if
     hash values are successfully calculated by Get-HashValue):
 
 
-        $env:temp\hash_values.txt       : text file     : hash_values.txt
+        $env:temp\hash_values.txt       : TXT-file     : hash_values.txt
 
 
 .NOTES
@@ -422,7 +424,7 @@ Please note that all the parameters can be used in one get hash value command
 and that each of the parameters can be "tab completed" before typing them fully (by
 pressing the [tab] key).
 
-Please note that the default text file name (hash_values.txt) is defined at 
+Please note that the default text file name (hash_values.txt) is defined at
 line 29 with the $txt_filename variable.
 
 Please note that the possibly generated text file is created in a directory,
@@ -447,11 +449,11 @@ http://www.eightforums.com/tutorials/23500-temporary-files-folder-change-locatio
 .EXAMPLE
 ./Get-HashValue a_certain_filename.exe
 Run the script. Please notice to insert ./ or .\ before the script name.
-The current directory gets searched for the inputted filename 
-"a_certain_filename.exe") and if any hash values were successfully calculated, the 
-text file is saved to the default location ($env:temp). During the possibly invoked 
-text file creation procedure Get-HashValue tries to preserve any pre-existing content 
-rather than overwrite the file, so if the default text file (hash_values.txt) already 
+The current directory gets searched for the inputted filename
+"a_certain_filename.exe") and if any hash values were successfully calculated, the
+text file is saved to the default location ($env:temp). During the possibly invoked
+text file creation procedure Get-HashValue tries to preserve any pre-existing content
+rather than overwrite the file, so if the text file (hash_values.txt) already
 exists, new log-info data is appended to the end of that file.
 
 .EXAMPLE
@@ -461,9 +463,10 @@ Display the help file.
 .EXAMPLE
 ./Get-HashValue -FilePath "C:\Windows\explorer.exe" -Output "C:\Scripts"
 
-Run the script and get the hash values from the "C:\Windows\explorer.exe" file and 
-if any hash values were successfully calculated, save the text file to C:\Scripts. 
-Please note, that -FilePath can be omitted in this example, because
+Run the script and get the MD5, SHA1, SHA256, SHA384, SHA512, MACTripleDES and
+RIPEMD160 hash values from the "C:\Windows\explorer.exe" file and if any hash values
+were successfully calculated, save the text file to C:\Scripts. Please note, that
+-FilePath can be omitted in this example, because
 
     ./Get-HashValue "C:\Windows\explorer.exe" -Output "C:\Scripts"
 
@@ -472,13 +475,13 @@ will result in the exact same outcome.
 .EXAMPLE
 ./Get-HashValue -Source "C:\Users\Dropbox\a certain filename.exe" -Algorithm SHA256
 
-Will display the SHA256 hash value of "C:\Users\Dropbox\a certain filename.exe" 
-in console and write it to a text file, which is saved to the default location 
-($env:temp). This command will work, because -Source is an alias of -FilePath. 
-The -FilePath (a.k.a. -Source a.k.a. -FilenameWithPathName a.k.a. -FullPath 
-a.k.a. -File) variable value is case-insensitive (as is most of the 
-PowerShell), but since the filename contains space characters, the whole FullPath 
-value needs to be enveloped with quotation marks. The -Source parameter may be 
+Will display the SHA256 hash value of "C:\Users\Dropbox\a certain filename.exe"
+in console and write it to a text file, which is saved to the default location
+($env:temp). This command will work, because -Source is an alias of -FilePath.
+The -FilePath (a.k.a. -Source a.k.a. -FilenameWithPathName a.k.a. -FullPath
+a.k.a. -File) variable value is case-insensitive (as is most of the
+PowerShell), but since the filename contains space characters, the whole FullPath
+value needs to be enveloped with quotation marks. The -Source parameter may be
 left out from this command, since, for example,
 
     ./Get-HashValue "c:\users\dROPBOx\A Certain Filename.exe" -Algorithm SHA256
@@ -488,15 +491,15 @@ is the exact same command in nature.
 .EXAMPLE
 ./Get-HashValue -FilePath "C:\Windows\explorer.exe", "C:\Users\Dropbox\a_certain_filename.exe"
 
-Will display the hash values of "C:\Windows\explorer.exe" and 
-"C:\Users\Dropbox\a_certain_filename.exe" in console and write them to a text file, 
-which is saved to the default location ($env:temp). Since the FilePath values don't
-contain any space characters, they don't need to be enveloped with quotation marks, 
+Will display the hash values of "C:\Windows\explorer.exe" and
+"C:\Users\Dropbox\a_certain_filename.exe" in console and write them to a text file,
+which is saved to the default location ($env:temp). Since the -FilePath values don't
+contain any space characters, they don't need to be enveloped with quotation marks,
 because
 
     ./Get-HashValue C:\Windows\explorer.exe, C:\Users\Dropbox\a_certain_filename.exe
 
-would result in the exact same outcome.
+would result in the same outcome.
 
 .EXAMPLE
 Set-ExecutionPolicy remotesigned
