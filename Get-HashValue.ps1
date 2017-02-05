@@ -357,9 +357,9 @@ $env:temp, which points to the current temporary file location and is set in the
 system (- for more information about $env:temp, please see the Notes section).
 The default output destination folder may be changed with the -Output parameter.
 During the possibly invoked text file creation procedure Get-HashValue tries to
-preserve any pre-existing content rather than overwrite the file, so if the text file
-already exists in the defined -Output folder, new log-info data is appended to the
-end of that file. Please note that if any of the parameter values include space
+preserve any pre-existing content rather than overwrite the file, so if the text
+file already exists in the defined -Output folder, new data is appended to the end
+of that file. Please note that if any of the parameter values include space
 characters, the value should be enclosed in quotation marks (single or double) so
 that PowerShell can interpret the command correctly.
 
