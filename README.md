@@ -63,7 +63,7 @@
                 </tr>
                 <tr>
                     <td style="padding:6px">Lee Holmes:</td>
-                    <td style="padding:6px"><a href="http://www.leeholmes.com/guide">Windows PowerShell Cookbook (O'Reilly)</a>: Get-FileHash script</td>
+                    <td style="padding:6px"><a href="http://www.leeholmes.com/guide">Windows PowerShell Cookbook (O'Reilly)</a>: Get-FileHash <a href="http://poshcode.org/2154">script</a></td>
                 </tr>
             </table>
         </td>
@@ -340,7 +340,7 @@
         <td style="padding:6px">Gisli: <a href="http://stackoverflow.com/questions/8711564/unable-to-read-an-open-file-with-binary-reader">Unable to read an open file with binary reader</a></td>
     </tr>
     <tr>
-        <td style="padding:6px">Lee Holmes: <a href="http://www.leeholmes.com/guide">Windows PowerShell Cookbook (O'Reilly)</a>: Get-FileHash script</td>
+        <td style="padding:6px">Lee Holmes: <a href="http://www.leeholmes.com/guide">Windows PowerShell Cookbook (O'Reilly)</a>: Get-FileHash <a href="http://poshcode.org/2154">script</a></td>
     </tr>
     <tr>
         <td style="padding:6px"><a href="https://msdn.microsoft.com/en-us/library/system.security.cryptography.sha256cryptoserviceprovider(v=vs.110).aspx">SHA256CryptoServiceProvider Class</a></td>
