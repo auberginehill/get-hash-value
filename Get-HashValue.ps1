@@ -454,7 +454,7 @@ The current directory gets searched for the inputted filename
 text file is saved to the default location ($env:temp). During the possibly invoked
 text file creation procedure Get-HashValue tries to preserve any pre-existing content
 rather than overwrite the file, so if the text file (hash_values.txt) already
-exists, new log-info data is appended to the end of that file.
+exists, new data is appended to the end of that file.
 
 .EXAMPLE
 help ./Get-HashValue -Full
