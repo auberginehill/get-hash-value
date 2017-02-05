@@ -79,7 +79,7 @@
 
 ### Screenshot
 
-<img class="screenshot" title="screenshot" alt="screenshot" height="100%" width="100%" src="https://raw.githubusercontent.com/auberginehill/get-hash-value/master/Get-HashValue.png">
+<img class="screenshot" title="screenshot" alt="screenshot" height="80%" width="80%" src="https://raw.githubusercontent.com/auberginehill/get-hash-value/master/Get-HashValue.png">
 
 
 
