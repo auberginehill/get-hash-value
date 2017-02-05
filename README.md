@@ -30,13 +30,11 @@
    </tr>
    <tr>
       <td style="padding:6px"><strong>Description:</strong></td>
-      <td style="padding:6px">Get-HashValue uses the inbuilt <code>Get-FileHash</code> cmdlet in machines that have PowerShell version 4 or later installed and .NET Framework v3.5 in machines that are running PowerShell version 2 or 3 for file analysation and calculating hash values. MD5, SHA256, SHA1, SHA384, SHA512, MACTripleDES and RIPEMD160 hash values are automatically displayed for files that are defined with the <code>-FilePath</code> parameter. To show only a certain hash type, the parameter <code>-Algorithm</code> may be added to the launching command.
+      <td style="padding:6px">Get-HashValue uses the inbuilt <code>Get-FileHash</code> cmdlet in machines that have PowerShell version 4 or later installed and .NET Framework v3.5 in machines that are running PowerShell version 2 or 3 for file analysation and for calculating the hash values. MD5, SHA256, SHA1, SHA384, SHA512, MACTripleDES and RIPEMD160 hash values are automatically displayed for files that are defined with the <code>-FilePath</code> parameter. To show only a certain hash type, the parameter <code>-Algorithm</code> may be added to the launching command.
       <br />
       <br />The <code>-FilePath</code> parameter accepts plain filenames (then the current directory gets searched for the inputted filename) or 'FullPath' filenames, which include the path to the file as well (such as <code>C:\Windows\explorer.exe</code>). To enter multiple files for analysation, please separate each individual entity with a comma. If the filename or the directory name includes space characters, please enclose the whole string (the individual entity in question) in quotation marks (single or double). 
       <br /> 
-      <br />If any hash values are found, a text file (<code>hash_values.txt</code>) is created to <code>$env:temp</code>, which points to the current temporary file location and is set in the system (- for more information about <code>$env:temp</code>, please see the Notes section). The default output destination folder may be changed with the <code>-Output</code> parameter. During the possibly invoked text file creation procedure Get-HashValue tries to preserve any pre-existing content rather than overwrite the file, so if the text file already exists in the defined <code>-Output</code> folder, new log-info data is appended to the end of that file. 
-      <br />
-      <br />Please note that if any of the parameter values include space characters, the value should be enclosed in quotation marks (single or double) so that PowerShell can interpret the command correctly.</td>
+      <br />If any hash values are found, a text file (<code>hash_values.txt</code>) is created to <code>$env:temp</code>, which points to the current temporary file location and is set in the system (- for more information about <code>$env:temp</code>, please see the Notes section). The default output destination folder may be changed with the <code>-Output</code> parameter. During the possibly invoked text file creation procedure Get-HashValue tries to preserve any pre-existing content rather than overwrite the file, so if the text file already exists in the defined <code>-Output</code> folder, new log-info data is appended to the end of that file. Please note that if any of the parameter values include space characters, the value should be enclosed in quotation marks (single or double) so that PowerShell can interpret the command correctly.</td>
    </tr>
    <tr>
       <td style="padding:6px"><strong>Homepage:</strong></td>
@@ -115,7 +113,7 @@
                 <p>
                     <li>
                         <h5>Parameter <code>-Algorithm</code></h5>
-                        <p>with aliases <code>-Type</code>, <code>-Hash</code>, <code>-HashType</code>, <code>-Version</code> and <code>-Algo</code>. If the <code>-Algorithm</code> parameter is added to the command launching Get-HashValue, only the defined type of hash value of the object file(s) is displayed and written to the text file. The valid values for <code>-Algorithm</code> parameter are MD5, SHA1, SHA256, SHA384, SHA512, MACTripleDES or RIPEMD160. For best results, please specify only one valid value for <code>-Algorithm</code> parameter in one get hash value command. To make the <code>-Algorithm</code> parameter accept multiple values may be the focus of further development in Get-HashValue.</p>
+                        <p>with aliases <code>-Type</code>, <code>-Hash</code>, <code>-HashType</code>, <code>-Version</code> and <code>-Algo</code>. If the <code>-Algorithm</code> parameter is added to the command launching Get-HashValue, only the defined type of hash value of the object file(s) is displayed and written to the text file. The valid values for <code>-Algorithm</code> parameter are MD5, SHA1, SHA256, SHA384, SHA512, MACTripleDES or RIPEMD160. For best results, please specify only one valid value for <code>-Algorithm</code> parameter in one get hash value command. To make the <code>-Algorithm</code> parameter accept multiple values may be the focus of further development in Get-HashValue. If no <code>-Algorithm</code> parameter is defined in the command launching Get-HashValue, all  the available hash values (i.e. MD5, SHA256, SHA1, SHA384, SHA512, MACTripleDES and RIPEMD160) are displayed and written to a text file.</p>
                     </li>
                 </p>
             </ul>
@@ -133,7 +131,7 @@
         <th>:arrow_right:</th>
         <td style="padding:6px">
             <ul>
-                <li>Displays information about hash values in console, and if any hash values were successfully calculated, writes or updates a logfile (<code>hash_values.txt</code>) at <code>$env:temp</code> by default or at the location specified with the <code>-Output</code> parameter.</li>
+                <li>Displays information about hash values in console, and if any hash values were successfully calculated, writes or updates a text file (<code>hash_values.txt</code>) at <code>$env:temp</code> by default or at the location specified with the <code>-Output</code> parameter.</li>
             </ul>
         </td>
     </tr>
@@ -142,7 +140,7 @@
         <td style="padding:6px">
             <ul>
                 <p>
-                    <li>Default values (the text file creation/updating procedure only occurs if hash values are successfully calculated by Get-HashValue):</li>
+                    <li>Default values (the text file creation/updating procedure only occurs, if hash values are successfully calculated by Get-HashValue):</li>
                 </p>
                 <ol>
                     <p>
@@ -229,7 +227,7 @@
                 </p>
                 <p>
                     <li><code>./Get-HashValue -FilePath "C:\Windows\explorer.exe" -Output "C:\Scripts"</code><br />
-                    Run the script and get the hash values from the "<code>C:\Windows\explorer.exe</code>" file and if any hash values were successfully calculated, save the text file to <code>C:\Scripts</code>. Please note, that <code>-FilePath</code> can be omitted in this example, because
+                    Run the script and get  get the MD5, SHA1, SHA256, SHA384, SHA512, MACTripleDES and RIPEMD160 hash values from the "<code>C:\Windows\explorer.exe</code>" file and if any hash values were successfully calculated, save the text file to <code>C:\Scripts</code>. Please note, that <code>-FilePath</code> can be omitted in this example, because
                     <br />
                     <br /><code>./Get-HashValue "C:\Windows\explorer.exe" -Output "C:\Scripts"</code>
                     <br />
