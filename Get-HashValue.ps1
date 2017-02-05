@@ -172,13 +172,13 @@ Process {
             If (($PSVersionTable.PSVersion).Major -ge 4) {
                 # Requires PowerShell version 4.0
                 # Source: https://msdn.microsoft.com/en-us/powershell/reference/5.1/microsoft.powershell.utility/get-filehash
-                $hash_MD5 = Get-FileHash $full_path -Algorithm MD5
-                $hash_SHA256 = Get-FileHash $full_path -Algorithm SHA256
-                $hash_SHA1 = Get-FileHash $full_path -Algorithm SHA1
-                $hash_SHA384 = Get-FileHash $full_path -Algorithm SHA384
-                $hash_SHA512 = Get-FileHash $full_path -Algorithm SHA512
-                $hash_MACTripleDES = Get-FileHash $full_path -Algorithm MACTripleDES
-                $hash_RIPEMD160 = Get-FileHash $full_path -Algorithm RIPEMD160
+                $hash_MD5 = Get-FileHash $full_path -Algorithm MD5 | Select-Object -ExpandProperty Hash
+                $hash_SHA256 = Get-FileHash $full_path -Algorithm SHA256 | Select-Object -ExpandProperty Hash
+                $hash_SHA1 = Get-FileHash $full_path -Algorithm SHA1 | Select-Object -ExpandProperty Hash
+                $hash_SHA384 = Get-FileHash $full_path -Algorithm SHA384 | Select-Object -ExpandProperty Hash
+                $hash_SHA512 = Get-FileHash $full_path -Algorithm SHA512 | Select-Object -ExpandProperty Hash
+                $hash_MACTripleDES = Get-FileHash $full_path -Algorithm MACTripleDES | Select-Object -ExpandProperty Hash
+                $hash_RIPEMD160 = Get-FileHash $full_path -Algorithm RIPEMD160 | Select-Object -ExpandProperty Hash
             } Else {
                 # Get MD5, SHA256, SHA1, SHA384, SHA512, MACTripleDES and RIPEMD160 hash values in PowerShell version 2
                 # Calculate the hash of the file regardless whether it is opened in another program or not
