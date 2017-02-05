@@ -220,7 +220,7 @@
             <ol>
                 <p>
                     <li><code>./Get-HashValue a_certain_filename.exe</code><br />
-                    Run the script. Please notice to insert <code>./</code> or <code>.\</code> before the script name. The current directory gets searched for the inputted filename "<code>a_certain_filename.exe</code>") and if any hash values were successfully calculated, the text file is saved to the default location (<code>$env:temp</code>). During the possibly invoked text file creation procedure Get-HashValue tries to preserve any pre-existing content rather than overwrite the file, so if the text file (<code>hash_values.txt</code>) already exists, new log-info data is appended to the end of that file.</li>
+                    Run the script. Please notice to insert <code>./</code> or <code>.\</code> before the script name. The current directory gets searched for the inputted filename "<code>a_certain_filename.exe</code>") and if any hash values were successfully calculated, the text file is saved to the default location (<code>$env:temp</code>). During the possibly invoked text file creation procedure Get-HashValue tries to preserve any pre-existing content rather than overwrite the file, so if the text file (<code>hash_values.txt</code>) already exists, new data is appended to the end of that file.</li>
                 </p>
                 <p>
                     <li><code>help ./Get-HashValue -Full</code><br />
