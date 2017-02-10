@@ -35,7 +35,7 @@ Begin {
     $results = @()
     $skipped = @()
     $skipped_path_names = @()
-    $number_of_filepaths = $FilePath.Count
+    $num_invalid_paths = 0
 
 
     # Test if the Output-path ("ReportPath") exists
@@ -64,7 +64,7 @@ Begin {
     } # Else (if)
 
 
-    # If a file name is specified, add that to the list of files to process
+    # If a filename is specified, add that to the list of files to process
     # Source: http://poshcode.org/2154
     # Credit: Lee Holmes: "Windows PowerShell Cookbook (O'Reilly)" (Get-FileHash script) http://www.leeholmes.com/guide
     If ($FilePath) {
@@ -89,7 +89,7 @@ Begin {
                 $skip_text = "Skipping '$path' from the results."
                 Write-Output $skip_text
 
-                    # Add the path as an object (with properties) to a collection of skipped paths
+                    # Add the file candidate as an object (with properties) to a collection of skipped paths
                     $skipped += $obj_skipped = New-Object -TypeName PSCustomObject -Property @{
 
                                 'Skipped FilePath Values'   = $path
@@ -97,12 +97,12 @@ Begin {
                                 'Created on'                = ""
                                 'Last Updated'              = ""
                                 'Size'                      = "-"
-                                'Error'                     = "The path or file was not found on $computer."
+                                'Error'                     = "The file was not found on $computer."
                                 'raw_size'                  = 0
 
                         } # New-Object
 
-                # Add the path name to a list of failed path names
+                # Add the file candidate to a list of failed filenames
                 $skipped_path_names += $path
 
                 # Return to top of the program loop (ForEach $path) and skip just this iteration of the loop.
@@ -161,6 +161,25 @@ Process {
         # Source: http://go.microsoft.com/fwlink/?LinkID=113418
         If ((Test-Path $file -PathType Leaf) -eq $false) {
 
+                    # Increment the error counter
+                    $num_invalid_paths++
+
+                    # Add the file candidate as an object (with properties) to a collection of skipped paths
+                    $skipped += $obj_skipped = New-Object -TypeName PSCustomObject -Property @{
+
+                                'Skipped FilePath Values'   = $file
+                                'Owner'                     = ""
+                                'Created on'                = ""
+                                'Last Updated'              = ""
+                                'Size'                      = "-"
+                                'Error'                     = "The FilePath value points to a directory."
+                                'raw_size'                  = 0
+
+                        } # New-Object
+
+                    # Add the file candidate to a list of failed filenames
+                    $skipped_path_names += $file
+
             # Skip the item ($file) if it is not a file (return to top of the program loop (ForEach $file)
             Continue
 
@@ -184,30 +203,43 @@ Process {
                 # Calculate the hash of the file regardless whether it is opened in another program or not
                 # Source: http://stackoverflow.com/questions/21252824/how-do-i-get-powershell-4-cmdlets-such-as-test-netconnection-to-work-on-windows
                 # Credit: Gisli: "Unable to read an open file with binary reader" http://stackoverflow.com/questions/8711564/unable-to-read-an-open-file-with-binary-reader
-                $source_file = [System.IO.File]::Open("$full_path",[System.IO.Filemode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
-                    $hash_MD5 = [System.BitConverter]::ToString($MD5.ComputeHash($source_file)) -replace "-",""
-                $source_file.Close()
-                $source_file = [System.IO.File]::Open("$full_path",[System.IO.Filemode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
-                    $hash_SHA256 = [System.BitConverter]::ToString($SHA256.ComputeHash($source_file)) -replace "-",""
-                $source_file.Close()
-                $source_file = [System.IO.File]::Open("$full_path",[System.IO.Filemode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
-                    $hash_SHA1 = [System.BitConverter]::ToString($SHA1.ComputeHash($source_file)) -replace "-",""
-                $source_file.Close()
-                $source_file = [System.IO.File]::Open("$full_path",[System.IO.Filemode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
-                    $hash_SHA384 = [System.BitConverter]::ToString($SHA384.ComputeHash($source_file)) -replace "-",""
-                $source_file.Close()
-                $source_file = [System.IO.File]::Open("$full_path",[System.IO.Filemode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
-                    $hash_SHA512 = [System.BitConverter]::ToString($SHA512.ComputeHash($source_file)) -replace "-",""
-                $source_file.Close()
-                $source_file = [System.IO.File]::Open("$full_path",[System.IO.Filemode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
-                    $hash_MACTripleDES = [System.BitConverter]::ToString($MACTripleDES.ComputeHash($source_file)) -replace "-",""
-                $source_file.Close()
-                $source_file = [System.IO.File]::Open("$full_path",[System.IO.Filemode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
-                    $hash_RIPEMD160 = [System.BitConverter]::ToString($RIPEMD160.ComputeHash($source_file)) -replace "-",""
-                $source_file.Close()
+                    # MD5 (PowerShell v2)
+                    $source_file_a = [System.IO.File]::Open("$full_path",[System.IO.Filemode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
+                    $hash_MD5 = [System.BitConverter]::ToString($MD5.ComputeHash($source_file_a)) -replace "-",""
+                    $source_file_a.Close()
+
+                    # SHA256 (PowerShell v2)
+                    $source_file_b = [System.IO.File]::Open("$full_path",[System.IO.Filemode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
+                    $hash_SHA256 = [System.BitConverter]::ToString($SHA256.ComputeHash($source_file_b)) -replace "-",""
+                    $source_file_b.Close()
+
+                    # SHA1 (PowerShell v2)
+                    $source_file_c = [System.IO.File]::Open("$full_path",[System.IO.Filemode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
+                    $hash_SHA1 = [System.BitConverter]::ToString($SHA1.ComputeHash($source_file_c)) -replace "-",""
+                    $source_file_c.Close()
+
+                    # SHA384 (PowerShell v2)
+                    $source_file_d = [System.IO.File]::Open("$full_path",[System.IO.Filemode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
+                    $hash_SHA384 = [System.BitConverter]::ToString($SHA384.ComputeHash($source_file_d)) -replace "-",""
+                    $source_file_d.Close()
+
+                    # SHA512 (PowerShell v2)
+                    $source_file_e = [System.IO.File]::Open("$full_path",[System.IO.Filemode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
+                    $hash_SHA512 = [System.BitConverter]::ToString($SHA512.ComputeHash($source_file_e)) -replace "-",""
+                    $source_file_e.Close()
+
+                    # MACTripleDES (PowerShell v2)
+                    $source_file_f = [System.IO.File]::Open("$full_path",[System.IO.Filemode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
+                    $hash_MACTripleDES = [System.BitConverter]::ToString($MACTripleDES.ComputeHash($source_file_f)) -replace "-",""
+                    $source_file_f.Close()
+
+                    # RIPEMD160 (PowerShell v2)
+                    $source_file_g = [System.IO.File]::Open("$full_path",[System.IO.Filemode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
+                    $hash_RIPEMD160 = [System.BitConverter]::ToString($RIPEMD160.ComputeHash($source_file_g)) -replace "-",""
+                    $source_file_g.Close()
             } # Else (If $PSVersionTable.PSVersion)
 
-        } # Else (If (-not)
+        } # Else (If Test-Path $file)
 
         # Source: https://msdn.microsoft.com/en-us/library/system.io.path_methods(v=vs.110).aspx
         $filename = ([System.IO.Path]::GetFileName($full_path))
@@ -231,9 +263,7 @@ Process {
                                         'SHA512'        = $hash_SHA512
                                         'SHA256'        = $hash_SHA256
                                 } # New-Object
-
     } # ForEach ($file)
-
 } # Process
 
 
@@ -241,60 +271,76 @@ Process {
 
 End {
 
-            # Do the background work for natural language
-            If ($number_of_filepaths -gt 1) { $item_text = "items" } Else { $item_text = "item" }
-
-            If (($invalid_filepath_was_found) -ne $true) {
-                $enumeration_went_succesfully = $true
+                # Do the background work for natural language
+                If ($results.Count -gt 1) { $item_text = "items" } Else { $item_text = "item" }
+                $unique_folders = "$(($results | select -ExpandProperty Directory -Unique) -join ', ')"
                 $empty_line | Out-String
-                $stats_text = "Total $number_of_filepaths $item_text processed at $(($results | select -ExpandProperty Directory -Unique) -join ", ")"
-            } Else {
-                $enumeration_went_succesfully = $false
 
-                # Display the skipped path names in console
-                $empty_line | Out-String
-                $skipped.PSObject.TypeNames.Insert(0,"Skipped FilePath Names")
-                $skipped_selection = $skipped | Select-Object 'Skipped FilePath Values','Size','Error' | Sort-Object 'Skipped FilePath Values'
-                $skipped_selection | Format-Table -auto
+                # Write the operational stats in console
+                If ($skipped_path_names.Count -eq 0) {
+                    $enumeration_went_succesfully = $true
+                            If ($results.Count -le 4) {
+                                $stats_text = "Total $($results.Count) $item_text processed at $unique_folders."
+                            } Else {
+                                $stats_text = "Total $($results.Count) $item_text processed."
+                            } # Else (If $results.Count)
+                    Write-Output $stats_text
 
-                If ($num_invalid_paths -gt 1) {
-                    $stats_text = "Total $number_of_filepaths $item_text processed. There were $num_invalid_paths skipped FilePath values."
                 } Else {
-                    $stats_text = "Total $number_of_filepaths $item_text processed. One FilePath value was skipped."
-                } # Else
 
-            } # Else (If $invalid_filepath_was_found)
+                    # Display the skipped path names and write the operational stats in console
+                    $enumeration_went_succesfully = $false
+                    $skipped.PSObject.TypeNames.Insert(0,"Skipped FilePath Names")
+                    $skipped_selection = $skipped | Select-Object 'Skipped FilePath Values','Size','Error' | Sort-Object 'Skipped FilePath Values'
+                    $skipped_selection | Format-Table -auto
+                            If ($num_invalid_paths -gt 1) {
+                                If ($results.Count -eq 0) {
+                                    $stats_text = "There were $num_invalid_paths skipped FilePath values. Didn't process any files."
+                                } ElseIf ($results.Count -le 4) {
+                                    $stats_text = "Total $($results.Count) $item_text processed at $unique_folders. There were $num_invalid_paths skipped FilePath values."
+                                } Else {
+                                    $stats_text = "Total $($results.Count) $item_text processed. There were $num_invalid_paths skipped FilePath values."
+                                } # Else (If $results.Count)
+                            } Else {
+                                If ($results.Count -eq 0) {
+                                    $stats_text = "One path name was skipped. Didn't process any files."
+                                } ElseIf ($results.Count -le 4) {
+                                    $stats_text = "Total $($results.Count) $item_text processed at $unique_folders. One FilePath value was skipped."
+                                } Else {
+                                    $stats_text = "Total $($results.Count) $item_text processed. One FilePath value was skipped."
+                                } # Else (If $results.Count)
+                            } # Else (If $num_invalid_paths)
+                    Write-Output $stats_text
+
+                } # Else (If $skipped_path_names.Count)
 
 
     If ($results.Count -ge 1) {
 
-        # Write the hash values in console
-        Write-Output $stats_text
-        $results.PSObject.TypeNames.Insert(0,"Hash Values")
 
+        # Write the hash values in console
+        $results.PSObject.TypeNames.Insert(0,"Hash Values")
                 If ($Algorithm) {
                     $results_selection = $results | select "File","Full Path","$Algorithm"
                 } Else {
                     $results_selection = $results | select 'File','Full Path','MD5','MACTripleDES','RIPEMD160','SHA1','SHA384','SHA512','SHA256'
                 } # Else
-
         Write-Output $results_selection | Format-List
 
 
-        # Write the hash valuess to a text file (located at the current temp-folder or the location is defined with the -Output parameter)
+                # Write the hash valuess to a text file (located at the current temp-folder or the location is defined with the -Output parameter)
                 If ((Test-Path $txt_file) -eq $false) {
-                        ($results_selection | Format-List) | Out-File "$txt_file" -Encoding UTF8 -Force
-                        Add-Content -Path "$txt_file" -Value "Date: $(Get-Date -Format g)"
+                    ($results_selection | Format-List) | Out-File "$txt_file" -Encoding UTF8 -Force
+                    Add-Content -Path "$txt_file" -Value "Date: $(Get-Date -Format g)"
                 } Else {
                         $pre_existing_content = Get-Content $txt_file
-                        ($pre_existing_content + $empty_line + $empty_line + $separator + $empty_line + ($results_selection | Format-List)) | Out-File "$txt_file" -Encoding UTF8 -Force
-                        Add-Content -Path "$txt_file" -Value "Date: $(Get-Date -Format g)"
+                    ($pre_existing_content + $empty_line + $empty_line + $separator + $empty_line + ($results_selection | Format-List)) | Out-File "$txt_file" -Encoding UTF8 -Force
+                    Add-Content -Path "$txt_file" -Value "Date: $(Get-Date -Format g)"
                 } # Else (If Test-Path)
 
     } Else {
-        $continue = $true
+        $empty_line | Out-String
     } # Else (If $results.Count)
-
 } # End
 
 
@@ -444,7 +490,7 @@ http://www.eightforums.com/tutorials/23500-temporary-files-folder-change-locatio
 
     Homepage:           https://github.com/auberginehill/get-hash-value
     Short URL:          http://tinyurl.com/gv3n8fn
-    Version:            1.0
+    Version:            1.1
 
 .EXAMPLE
 ./Get-HashValue a_certain_filename.exe
@@ -540,7 +586,8 @@ New-Item -ItemType File -Path C:\Temp\Get-HashValue.ps1
 Creates an empty ps1-file to the C:\Temp directory. The New-Item cmdlet has an inherent -NoClobber mode
 built into it, so that the procedure will halt, if overwriting (replacing the contents) of an existing
 file is about to happen. Overwriting a file with the New-Item cmdlet requires using the Force. If the
-path name includes space characters, please enclose the path name in quotation marks (single or double):
+path name and/or the filename includes space characters, please enclose the whole -Path parameter value
+in quotation marks (single or double):
 
     New-Item -ItemType File -Path "C:\Folder Name\Get-HashValue.ps1"
 
