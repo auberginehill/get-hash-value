@@ -16,7 +16,7 @@ Param (
     [string]$Output = "$env:temp",
     [ValidateSet("MD5","SHA1","SHA256","SHA384","SHA512","MACTripleDES","RIPEMD160")]
     [Alias("Type","Hash","HashType","Version","Algo")]
-    [string]$Algorithm
+    [string[]]$Algorithm
 )
 
 
@@ -321,7 +321,22 @@ End {
         # Write the hash values in console
         $results.PSObject.TypeNames.Insert(0,"Hash Values")
                 If ($Algorithm) {
-                    $results_selection = $results | select "File","Full Path","$Algorithm"
+
+                                # Create an array of the $Algorithm values
+                                # Source: Tobias Weltner: "PowerTips Monthly Volume 2: Arrays and Hash Tables" http://powershell.com/cs/media/p/24814.aspx
+                                $selection = "File", "Full Path"
+
+                                            Switch ($Algorithm) {
+                                                "MD5"           { $selection += "MD5" }
+                                                "SHA256"        { $selection += "SHA256" }
+                                                "SHA1"          { $selection += "SHA1" }
+                                                "SHA384"        { $selection += "SHA384" }
+                                                "SHA512"        { $selection += "SHA512" }
+                                                "MACTripleDES"  { $selection += "MACTripleDES" }
+                                                "RIPEMD160"     { $selection += "RIPEMD160" }
+                                            } # switch
+
+                    $results_selection = $results | select $selection
                 } Else {
                     $results_selection = $results | select 'File','Full Path','MD5','MACTripleDES','RIPEMD160','SHA1','SHA384','SHA512','SHA256'
                 } # Else
@@ -333,7 +348,7 @@ End {
                     ($results_selection | Format-List) | Out-File "$txt_file" -Encoding UTF8 -Force
                     Add-Content -Path "$txt_file" -Value "Date: $(Get-Date -Format g)"
                 } Else {
-                        $pre_existing_content = Get-Content $txt_file
+                    $pre_existing_content = Get-Content $txt_file
                     ($pre_existing_content + $empty_line + $empty_line + $separator + $empty_line + ($results_selection | Format-List)) | Out-File "$txt_file" -Encoding UTF8 -Force
                     Add-Content -Path "$txt_file" -Value "Date: $(Get-Date -Format g)"
                 } # Else (If Test-Path)
@@ -387,9 +402,9 @@ Get-HashValue uses the inbuilt Get-FileHash cmdlet in machines that have PowerSh
 version 4 or later installed and .NET Framework in machines that are running
 PowerShell version 2 or 3 for file analysation and for calculating the hash values.
 MD5, SHA256, SHA1, SHA384, SHA512, MACTripleDES and RIPEMD160 hash values are
-automatically displayed for files that are defined with the -FilePath parameter.
-To show only a certain hash type, the parameter -Algorithm may be added to the
-launching command.
+automatically displayed for files the that are defined with the -FilePath parameter.
+To show a certain hash type or a selection of the aforementioned hash types, the
+parameter -Algorithm may be added to the launching command.
 
 The -FilePath parameter accepts plain filenames (then the current directory gets
 searched for the inputted filename) or 'FullPath' filenames, which include the path
@@ -398,16 +413,16 @@ analysation, please separate each individual entity with a comma. If the filenam
 the directory name includes space characters, please enclose the whole string
 (the individual entity in question) in quotation marks (single or double).
 
-If any hash values are found, a text file (hash_values.txt) is created to
-$env:temp, which points to the current temporary file location and is set in the
-system (- for more information about $env:temp, please see the Notes section).
-The default output destination folder may be changed with the -Output parameter.
-During the possibly invoked text file creation procedure Get-HashValue tries to
-preserve any pre-existing content rather than overwrite the file, so if the text
-file already exists in the defined -Output folder, new data is appended to the end
-of that file. Please note that if any of the parameter values include space
-characters, the value should be enclosed in quotation marks (single or double) so
-that PowerShell can interpret the command correctly.
+If any hash values are successfully calculated, a text file (hash_values.txt) is 
+created to $env:temp, which points to the current temporary file location and is 
+set in the system (- for more information about $env:temp, please see the Notes 
+section). The default output destination folder may be changed with the -Output 
+parameter. During the possibly invoked text file creation procedure Get-HashValue 
+tries to preserve any pre-existing content rather than overwrite the file, so if 
+the text file already exists in the defined -Output folder, new data is appended 
+to the end of that file. Please note that if any of the parameter values include 
+space characters, the value should be enclosed in quotation marks (single or double)
+so that PowerShell can interpret the command correctly.
 
 .PARAMETER FilePath
 with aliases -FilenameWithPathName, -FullPath, -Source, and -File. The -FilePath
@@ -440,17 +455,15 @@ For usage, please see the Examples below and for more information about $env:tem
 please see the Notes section below.
 
 .PARAMETER Algorithm
-with aliases -Type, -Hash, -HashType, -Version and -Algo. If the -Algorithm
-parameter is added to the command launching Get-HashValue, only the defined type of
-hash value of the object file(s) is displayed and written to the text file. The valid
-values for -Algorithm parameter are MD5, SHA1, SHA256, SHA384, SHA512, MACTripleDES
-or RIPEMD160. For best results, please specify only one valid value for -Algorithm
-parameter in one get hash value command. To make the -Algorithm parameter accept
-multiple values may be the focus of further development in Get-HashValue.
-If no -Algorithm parameter is defined in the command launching Get-HashValue, all
-the available hash values (i.e. MD5, SHA256, SHA1, SHA384, SHA512, MACTripleDES and
-RIPEMD160) are displayed and written to a text file.
-
+with aliases -Type, -Hash, -HashType, -Version and -Algo. To enter multiple values
+to the -Algorithm parameter, please separate each individual entity with a comma.
+If the -Algorithm parameter is added to the command launching Get-HashValue, the
+defined types of hash values of the object file(s) are displayed and written
+to the text file. The valid values for -Algorithm parameter are MD5, SHA1, SHA256,
+SHA384, SHA512, MACTripleDES and RIPEMD160. If no -Algorithm parameter is defined
+in the command launching Get-HashValue, all the available hash values (i.e. MD5,
+SHA256, SHA1, SHA384, SHA512, MACTripleDES and RIPEMD160) are displayed and
+written to a text file.
 
 .OUTPUTS
 Displays information about hash values in console, and if any hash values were
@@ -490,7 +503,7 @@ http://www.eightforums.com/tutorials/23500-temporary-files-folder-change-locatio
 
     Homepage:           https://github.com/auberginehill/get-hash-value
     Short URL:          http://tinyurl.com/gv3n8fn
-    Version:            1.1
+    Version:            1.2
 
 .EXAMPLE
 ./Get-HashValue a_certain_filename.exe
@@ -518,17 +531,18 @@ were successfully calculated, save the text file to C:\Scripts. Please note, tha
 will result in the same outcome.
 
 .EXAMPLE
-./Get-HashValue -Source "C:\Users\Dropbox\a certain filename.exe" -Algorithm SHA256
-Will display the SHA256 hash value of "C:\Users\Dropbox\a certain filename.exe"
-in console and write it to a text file, which is saved to the default location
-($env:temp). This command will work, because -Source is an alias of -FilePath.
-The -FilePath (a.k.a. -Source a.k.a. -FilenameWithPathName a.k.a. -FullPath
-a.k.a. -File) variable value is case-insensitive (as is most of the
-PowerShell), but since the filename contains space characters, the whole FullPath
-value needs to be enveloped with quotation marks. The -Source parameter may be
-left out from this command, since, for example,
+./Get-HashValue -Source "C:\Users\Dropbox\a certain filename.exe" -Algorithm SHA256, MD5
+Will display the SHA256 and MD5 hash values of
+"C:\Users\Dropbox\a certain filename.exe" in console and write them to a text file,
+which is saved to the default location ($env:temp). This command will work, because
+-Source is an alias of -FilePath. The -FilePath (a.k.a. -Source a.k.a.
+-FilenameWithPathName a.k.a. -FullPath a.k.a. -File) variable value is
+case-insensitive (as is most of the PowerShell), but since the filename contains
+space characters, the whole FullPath value needs to be enveloped with quotation
+marks. Furthermore, the word -Source and the space character in the -Algorithm value
+list may be left out from this command, since, for example,
 
-    ./Get-HashValue "c:\users\dROPBOx\A Certain Filename.exe" -Algorithm SHA256
+    ./Get-HashValue "c:\users\dROPBOx\A Certain Filename.exe" -Algorithm sha256,md5
 
 is the exact same command in nature.
 
@@ -606,6 +620,7 @@ http://stackoverflow.com/questions/21252824/how-do-i-get-powershell-4-cmdlets-su
 https://msdn.microsoft.com/en-us/powershell/reference/5.1/microsoft.powershell.utility/get-filehash
 http://windowsitpro.com/scripting/calculate-md5-and-sha1-file-hashes-using-powershell
 https://gist.github.com/quentinproust/8d3bd11562a12446644f
+http://powershell.com/cs/media/p/24814.aspx
 http://poshcode.org/2154
 
 #>
