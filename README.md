@@ -379,10 +379,6 @@
     <tr>
         <td style="padding:6px"><a href="https://gist.github.com/quentinproust/8d3bd11562a12446644f">remove-duplicate-files.ps1</a></td>
     </tr>
-
-    <tr>
-        <td style="padding:6px">Lee Holmes: <a href="http://www.leeholmes.com/guide">Windows PowerShell Cookbook (O'Reilly)</a>: Get-FileHash <a href="http://poshcode.org/2154">script</a></td>
-    </tr>
     <tr>
         <td style="padding:6px">Tobias Weltner: <a href="http://powershell.com/cs/media/p/24814.aspx">PowerTips Monthly Volume 2: Arrays and Hash Tables</a> (or one of the <a href="https://web.archive.org/web/20150714100009/http://powershell.com/cs/media/p/24814.aspx">archive.org versions</a>)</td>
     </tr>
