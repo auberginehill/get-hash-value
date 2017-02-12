@@ -61,7 +61,7 @@ Begin {
         $real_output_path = Resolve-Path -Path $Output
         $txt_file = "$real_output_path\$txt_filename"
 
-    } # Else (if)
+    } # Else (If Test-Path $Output)
 
 
     # If a filename is specified, add that to the list of files to process
@@ -111,12 +111,12 @@ Begin {
             } Else {
 
                 # Resolve path (if path is specified as relative)
-                $full_path = (Resolve-Path $path).Path
-                $files += $full_path
+                $real_path = (Resolve-Path $path).Path
+                $files += $real_path
 
-            } # Else (if)
+            } # Else (If Test-Path $path)
 
-        } # ForEach path
+        } # ForEach $path
 
     } Else {
         # Take the files that are piped into the script
@@ -146,7 +146,7 @@ Begin {
     } # Else (If $FilePath)
 
 
-} # begin
+} # Begin
 
 
 
@@ -245,7 +245,7 @@ Process {
         $filename = ([System.IO.Path]::GetFileName($full_path))
         $path = ([System.IO.Path]::GetFullPath($full_path))
         $directory = ([System.IO.Path]::GetDirectoryName($full_path))
-        $extension = ([System.IO.Path]::GetExtension($full_path));
+        $extension = ([System.IO.Path]::GetExtension($full_path))
         $filename_without_extension = ([System.IO.Path]::GetFileNameWithoutExtension($full_path))
 
                                 $results += New-Object -TypeName PSCustomObject -Property @{
@@ -303,7 +303,7 @@ End {
                                 } # Else (If $results.Count)
                             } Else {
                                 If ($results.Count -eq 0) {
-                                    $stats_text = "One path name was skipped. Didn't process any files."
+                                    $stats_text = "One FilePath value was skipped. Didn't process any files."
                                 } ElseIf ($results.Count -le 4) {
                                     $stats_text = "Total $($results.Count) $item_text processed at $unique_folders. One FilePath value was skipped."
                                 } Else {
@@ -508,7 +508,6 @@ Display the help file.
 
 .EXAMPLE
 ./Get-HashValue -FilePath "C:\Windows\explorer.exe" -Output "C:\Scripts"
-
 Run the script and get the MD5, SHA1, SHA256, SHA384, SHA512, MACTripleDES and
 RIPEMD160 hash values from the "C:\Windows\explorer.exe" file and if any hash values
 were successfully calculated, save the text file to C:\Scripts. Please note, that
@@ -516,11 +515,10 @@ were successfully calculated, save the text file to C:\Scripts. Please note, tha
 
     ./Get-HashValue "C:\Windows\explorer.exe" -Output "C:\Scripts"
 
-will result in the exact same outcome.
+will result in the same outcome.
 
 .EXAMPLE
 ./Get-HashValue -Source "C:\Users\Dropbox\a certain filename.exe" -Algorithm SHA256
-
 Will display the SHA256 hash value of "C:\Users\Dropbox\a certain filename.exe"
 in console and write it to a text file, which is saved to the default location
 ($env:temp). This command will work, because -Source is an alias of -FilePath.
@@ -536,7 +534,6 @@ is the exact same command in nature.
 
 .EXAMPLE
 ./Get-HashValue -FilePath "C:\Windows\explorer.exe", "C:\Users\Dropbox\a_certain_filename.exe"
-
 Will display the hash values of "C:\Windows\explorer.exe" and
 "C:\Users\Dropbox\a_certain_filename.exe" in console and write them to a text file,
 which is saved to the default location ($env:temp). Since the -FilePath values don't
